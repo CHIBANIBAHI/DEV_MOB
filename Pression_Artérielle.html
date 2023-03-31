@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Calcul de pression artérielle</title>
+  </head>
+  <body>
+    <h1>Calcul de pression artérielle</h1>
+    <form id="upload-form" action="calcul_pression.py" method="post" enctype="multipart/form-data">
+      <label for="image">Télécharger une image :</label>
+      <input type="file" name="image" id="image">
+      <br>
+      <input type="submit" value="Calculer">
+    </form>
+    <div id="resultat"></div>
+    <script>
+      // Fonction pour traiter la réponse du serveur
+      function handleResponse(response) {
+        var resultatDiv = document.getElementById("resultat");
+        resultatDiv.innerHTML = "Pression artérielle calculée : " + response.pressure;
+      }
+
+      // Ajouter un écouteur d'événement pour soumettre le formulaire
+      var form = document.getElementById("upload-form");
+      form.addEventListener("submit", function(event) {
+        event.preventDefault();
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", form.action, true);
+        xhr.onload = function() {
+          if (xhr.status === 200) {
+            handleResponse(JSON.parse(xhr.responseText));
+          }
+        };
+        var formData = new FormData(form);
+        xhr.send(formData);
+      });
+    </script>
+  </body>
+</html>
+
